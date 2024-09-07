@@ -12,7 +12,8 @@ export default function Generos() {
   const [genresScores, setGenresScores] = useState([]);
   const asyncGetGenresScores = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/genres-scores');
+      const response = await axios.get('http://localhost:5000/predict-genres-model');
+      console.log(response.data);
       setGenresScores(response.data);
     } catch (error) {
       console.error('Error al obtener los datos:', error);

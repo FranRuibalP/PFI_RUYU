@@ -3,10 +3,11 @@ import { TextField, MenuItem, Button, Grid, Box, Autocomplete, Typography, Divid
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import MoreVertIcon from '@mui/icons-material/HelpOutline';
 import axios from 'axios';
-import { set } from 'date-fns';
+
 
 export default function Ventas() {
   const [publisher, setPublisher] = useState('');
+  const [publisherOptions, setPublisherOptions] = useState([]);
   const [reviews, setReviews] = useState('');
   const [score, setScore] = useState('');
   const [price, setPrice] = useState('');
@@ -14,6 +15,7 @@ export default function Ventas() {
   const [releaseDate, setReleaseDate] = useState(null);
   const [predictedSales, setPredictedSales] = useState('');
   const [estimatedEarnings, setEstimatedEarnings] = useState('');
+  const [avgCopies, setAvgCopies] = useState(0);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -27,7 +29,7 @@ export default function Ventas() {
     setAnchorEl(null);
   };
 
-  const publishers = ['Sony', 'Microsoft', 'Nintendo', 'Ubisoft', 'EA', 'Activision']; // Ejemplo de opciones
+  
   const availableGenres = [
     'Action', 'Adventure', 'Casual', 'Early Access', 'Free to Play',
     'Indie', 'RPG', 'Racing', 'Simulation', 'Sports', 'Strategy'
@@ -38,6 +40,7 @@ export default function Ventas() {
     
     const data = {
       publisher,
+      avgCopies,
       reviews,
       score,
       price,
@@ -47,15 +50,40 @@ export default function Ventas() {
     //console.log('Enviando datos:', { publisher, reviews, score, price, genres, releaseDate });
 
     try {
-      const response = await axios.post('http://localhost:3001/predict-sales', data);
-      const { sales, revenue } = response.data;
-      setPredictedSales(sales);
-      setEstimatedEarnings(revenue);
+      const response = await axios.post('http://localhost:5000/predict-sales-model', data);
+      const { sales } = response.data;
+      const salesPrediction = sales[0].toFixed(2);
+      const estimatedRevenue = (salesPrediction * price).toFixed(2);
+      setPredictedSales(parseFloat(salesPrediction));
+      setEstimatedEarnings(parseFloat(estimatedRevenue));
     } catch (error) {
       console.error('Error al enviar los datos:', error);
     }
   };
+  const handleInputChange = async (event, value) => {
+    if (value.length > 0) {
+      try {
+        const response = await axios.get(`http://localhost:5000/publishers?q=${value}`);
+        console.log(response.data[0].publishers);
+        setPublisherOptions(response.data);  // Asegúrate de que los datos sean la lista de publishers
+      } catch (error) {
+        console.error('Error fetching publishers:', error);
+      }
+    }
+  };
+  // Función para manejar la selección de un publisher
+  const handlePublisherChange = (event, newValue) => {
+    setPublisher(newValue);
 
+    // Buscar las copias promedio en base al publisher seleccionado
+    const selectedPublisher = publisherOptions.find(option => option.publishers === newValue);
+    
+    if (selectedPublisher) {
+      setAvgCopies(selectedPublisher.avg_publisher_copies);
+    } else {
+      setAvgCopies(0);  // Reiniciar si no se encuentra
+    }
+  };
   return (
     <Box sx={{ padding: 3 }}>
       <Grid container spacing={3}>
@@ -110,15 +138,26 @@ export default function Ventas() {
                 <Grid container spacing={3}>
                   {/* Publisher */}
                   <Grid item xs={12}>
-                    <Autocomplete
-                      options={publishers}
-                      value={publisher}
-                      onChange={(event, newValue) => setPublisher(newValue)}
-                      onInputChange={(event, newInputValue) => setPublisher(newInputValue)}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Nombre del Publisher" variant="outlined" fullWidth />
-                      )}
-                      freeSolo
+                  <Autocomplete
+                    options={publisherOptions.map(option => option.publishers)}  // Mapea a los nombres
+                    value={publisher}
+                    onInputChange={handleInputChange}  // Usa esta para disparar las búsquedas incrementales
+                    onChange={handlePublisherChange}  // Actualiza el valor seleccionado
+                    renderInput={(params) => (
+                      <TextField {...params} label="Nombre del Publisher" variant="outlined" fullWidth />
+                    )}
+                    freeSolo
+                  />
+                  </Grid>
+                  {/* Número de Copias Promedio del Publisher*/}
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Número de Copias Promedio del Publisher"
+                      type="number"
+                      variant="outlined"
+                      fullWidth
+                      value={avgCopies}
+                      onChange={(e) => setAvgCopies(e.target.value)}
                     />
                   </Grid>
 
