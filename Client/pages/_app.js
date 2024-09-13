@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }) {
           <Sidebar />
 
           {/* Contenido principal */}
-          <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: '64px' }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: '64px',backgroundColor:'#EFEFEF'}}>
             <Component {...pageProps} />
           </Box>
         </Box>

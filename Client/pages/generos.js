@@ -1,6 +1,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { Box, Grid, Typography, Divider } from '@mui/material';
+import { Box, Grid, Typography, Divider, Paper } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -12,7 +12,8 @@ export default function Generos() {
   const [genresScores, setGenresScores] = useState([]);
   const asyncGetGenresScores = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/genres-scores');
+      const response = await axios.get('http://localhost:5000/predict-genres-model');
+      console.log(response.data);
       setGenresScores(response.data);
     } catch (error) {
       console.error('Error al obtener los datos:', error);
@@ -41,7 +42,7 @@ export default function Generos() {
     },
     yaxis: {
       title: {
-        text: 'Popularidad (1-4)',
+        text: 'Popularidad (1-5)',
       },
     },
     plotOptions: {
@@ -68,12 +69,17 @@ export default function Generos() {
         </Grid>
         {/* Gráfico de Barras */}
         <Grid item xs={12}>
-          <ReactApexChart
+        <Paper
+              elevation={3}
+              style={{ padding: '1rem', borderRadius: '15px', backgroundColor: 'white' }}
+            >
+              <ReactApexChart
             options={chartOptions}
             series={chartSeries}
             type="bar"
             height={600}
-          />
+            />
+            </Paper>
         </Grid>
       </Grid>
     </Box>

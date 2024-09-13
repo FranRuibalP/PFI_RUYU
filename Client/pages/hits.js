@@ -7,19 +7,17 @@ import { set } from 'date-fns';
 
 export default function Hits() {
 
-    const predictHitProbability = (data) => {
-        // Implementar lógica de predicción aquí
-        // Esta función debería devolver un porcentaje basado en los datos proporcionados
-        return Math.random() * 100; // Ejemplo de valor aleatorio
-    };
+
 
   const [publisher, setPublisher] = useState('');
+  const [publisherOptions, setPublisherOptions] = useState([]);
   const [reviews, setReviews] = useState('');
   const [score, setScore] = useState('');
   const [price, setPrice] = useState('');
   const [genres, setGenres] = useState([]);
   const [releaseDate, setReleaseDate] = useState(null);
   const [hitProbability, setHitProbability] = useState(null);
+  const [avgCopies, setAvgCopies] = useState(0);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -33,7 +31,6 @@ export default function Hits() {
     setAnchorEl(null);
   };
 
-  const publishers = ['Sony', 'Microsoft', 'Nintendo', 'Ubisoft', 'EA', 'Activision']; // Ejemplo de opciones
   const availableGenres = [
     'Action', 'Adventure', 'Casual', 'Early Access', 'Free to Play',
     'Indie', 'RPG', 'Racing', 'Simulation', 'Sports', 'Strategy'
@@ -44,6 +41,7 @@ export default function Hits() {
     
     const data = {
       publisher,
+      avgCopies,
       reviews,
       score,
       price,
@@ -53,23 +51,49 @@ export default function Hits() {
     //console.log('Enviando datos:', { publisher, reviews, score, price, genres, releaseDate });
 
     try {
-      const response = await axios.post('http://localhost:3001/predict-hits', data);
-      const { hitProb } = response.data;
-      setHitProbability(hitProb[0][1]*100);
+      const response = await axios.post('http://localhost:5000/predict-hits-model', data);
+      const  hitProb  = response.data;
+      setHitProbability(hitProb.hits[0][1]);
     } catch (error) {
       console.error('Error al enviar los datos:', error);
     }
   };
+  const handleInputChange = async (event, value) => {
+    if (value.length > 0) {
+      try {
+        const response = await axios.get(`http://localhost:5000/publishers?q=${value}`);
+        console.log(response.data[0].publishers);
+        setPublisherOptions(response.data);  // Asegúrate de que los datos sean la lista de publishers
+      } catch (error) {
+        console.error('Error fetching publishers:', error);
+      }
+    }
+  };
+  // Función para manejar la selección de un publisher
+  const handlePublisherChange = (event, newValue) => {
+    setPublisher(newValue);
 
+    // Buscar las copias promedio en base al publisher seleccionado
+    const selectedPublisher = publisherOptions.find(option => option.publishers === newValue);
+    
+    if (selectedPublisher) {
+      setAvgCopies(selectedPublisher.avg_publisher_copies);
+    } else {
+      setAvgCopies(0);  // Reiniciar si no se encuentra
+    }
+  };
   return (
     <Box sx={{ padding: 3 }}>
       <Grid container spacing={3}>
+        
         <Grid item xs={12} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4">Predicción de Hits</Typography>
           <IconButton
             aria-label="more"
             aria-controls="long-menu"
             aria-haspopup="true"
+            color='primary'
+            size='large'
             onClick={handleClick}
           >
             <MoreVertIcon />
@@ -106,7 +130,18 @@ export default function Hits() {
         <Grid item xs={12}>
           <Divider />
         </Grid>
-
+        <div style={
+          {display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          flexDirection: 'column',
+          padding: '2rem',
+          margin: '2rem',
+          borderRadius: '20px',
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+          backgroundColor: 'white'
+        }
+        }>
         <Grid item xs={12}>
           <form onSubmit={handleFormSubmit}>
             <Grid container spacing={3}>
@@ -115,15 +150,26 @@ export default function Hits() {
                 <Grid container spacing={3}>
                   {/* Publisher */}
                   <Grid item xs={12}>
-                    <Autocomplete
-                      options={publishers}
-                      value={publisher}
-                      onChange={(event, newValue) => setPublisher(newValue)}
-                      onInputChange={(event, newInputValue) => setPublisher(newInputValue)}  
-                      renderInput={(params) => (
-                        <TextField {...params} label="Nombre del Publisher" variant="outlined" fullWidth />
-                      )}
-                      freeSolo
+                  <Autocomplete
+                    options={publisherOptions.map(option => option.publishers)}  // Mapea a los nombres
+                    value={publisher}
+                    onInputChange={handleInputChange}  // Usa esta para disparar las búsquedas incrementales
+                    onChange={handlePublisherChange}  // Actualiza el valor seleccionado
+                    renderInput={(params) => (
+                      <TextField {...params} label="Nombre del Publisher" variant="outlined" fullWidth />
+                    )}
+                    freeSolo
+                  />
+                  </Grid>
+                  {/* Número de Copias Promedio del Publisher*/}
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Número de Copias Promedio del Publisher"
+                      type="number"
+                      variant="outlined"
+                      fullWidth
+                      value={avgCopies}
+                      onChange={(e) => setAvgCopies(e.target.value)}
                     />
                   </Grid>
 
@@ -214,6 +260,7 @@ export default function Hits() {
             </Grid>
           </form>
         </Grid>
+        </div>
       </Grid>
     </Box>
   );
