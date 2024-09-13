@@ -93,6 +93,7 @@ export default function Ventas() {
             aria-label="more"
             aria-controls="long-menu"
             aria-haspopup="true"
+            color='primary'
             onClick={handleClick}
           >
             <MoreVertIcon />
@@ -129,7 +130,18 @@ export default function Ventas() {
         <Grid item xs={12}>
           <Divider />
         </Grid>
-
+        <div style={
+          {display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          flexDirection: 'column',
+          padding: '2rem',
+          margin: '2rem',
+          borderRadius: '20px',
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+          backgroundColor: 'white'
+        }
+        }>
         <Grid item xs={12}>
           <form onSubmit={handleFormSubmit}>
             <Grid container spacing={3}>
@@ -269,6 +281,7 @@ export default function Ventas() {
             </Grid>
           </form>
         </Grid>
+        </div>
       </Grid>
     </Box>
   );

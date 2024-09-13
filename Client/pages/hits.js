@@ -85,12 +85,15 @@ export default function Hits() {
   return (
     <Box sx={{ padding: 3 }}>
       <Grid container spacing={3}>
+        
         <Grid item xs={12} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4">Predicción de Hits</Typography>
           <IconButton
             aria-label="more"
             aria-controls="long-menu"
             aria-haspopup="true"
+            color='primary'
+            size='large'
             onClick={handleClick}
           >
             <MoreVertIcon />
@@ -127,7 +130,18 @@ export default function Hits() {
         <Grid item xs={12}>
           <Divider />
         </Grid>
-
+        <div style={
+          {display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          flexDirection: 'column',
+          padding: '2rem',
+          margin: '2rem',
+          borderRadius: '20px',
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+          backgroundColor: 'white'
+        }
+        }>
         <Grid item xs={12}>
           <form onSubmit={handleFormSubmit}>
             <Grid container spacing={3}>
@@ -246,6 +260,7 @@ export default function Hits() {
             </Grid>
           </form>
         </Grid>
+        </div>
       </Grid>
     </Box>
   );

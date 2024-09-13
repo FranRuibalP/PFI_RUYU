@@ -11,7 +11,7 @@ from pymongo import MongoClient
 app = Flask(__name__)
 CORS(app)  # Habilita CORS para todas las rutas
 # Conectar a MongoDB (asegúrate de reemplazar el enlace de conexión con el de tu clúster)
-client = MongoClient("mongodb+srv://adminF:FYk9Fvb0qxiRu8n6@cluster0.u3k93.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://adminF:REDACTED@cluster0.u3k93.mongodb.net/?retryWrites=true&w=majority")
 # Seleccionar la base de datos y la colección donde se subirá el JSON
 db = client['Ruyu']
 
@@ -57,7 +57,10 @@ def predictSales():
     price = float(data.get('price'))
     reviews = int(data.get('reviews'))
     reviewScore = float(data.get('score'))
-    avg_publisher_copies = float(data.get('avgCopies'))
+    if float(data.get('avgCopies')) == 0:
+        avg_publisher_copies = 100
+    else:
+        avg_publisher_copies = float(data.get('avgCopies'))
     publishers = data.get('publisher')
     # Convertir la lista de géneros a un diccionario con 1s y 0s
     genres = {genre: (1 if genre in data.get('genres') else 0) for genre in all_genres}
@@ -106,7 +109,12 @@ def predictHits():
     reviewScore = float(data.get('score'))
     
     publishers = data.get('publisher')
-    avg_publisher_copies = float(data.get('avgCopies'))
+
+    if float(data.get('avgCopies')) == 0:
+        avg_publisher_copies = 100
+    else:
+        avg_publisher_copies = float(data.get('avgCopies'))
+    
     # Convertir la lista de géneros a un diccionario con 1s y 0s
     genres = {genre: (1 if genre in data.get('genres') else 0) for genre in all_genres}
     year, season = extract_year_and_season(data.get('releaseDate'))

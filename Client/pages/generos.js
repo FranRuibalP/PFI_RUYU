@@ -1,6 +1,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { Box, Grid, Typography, Divider } from '@mui/material';
+import { Box, Grid, Typography, Divider, Paper } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -42,7 +42,7 @@ export default function Generos() {
     },
     yaxis: {
       title: {
-        text: 'Popularidad (1-4)',
+        text: 'Popularidad (1-5)',
       },
     },
     plotOptions: {
@@ -69,12 +69,17 @@ export default function Generos() {
         </Grid>
         {/* Gráfico de Barras */}
         <Grid item xs={12}>
-          <ReactApexChart
+        <Paper
+              elevation={3}
+              style={{ padding: '1rem', borderRadius: '15px', backgroundColor: 'white' }}
+            >
+              <ReactApexChart
             options={chartOptions}
             series={chartSeries}
             type="bar"
             height={600}
-          />
+            />
+            </Paper>
         </Grid>
       </Grid>
     </Box>
