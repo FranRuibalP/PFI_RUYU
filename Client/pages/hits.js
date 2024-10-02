@@ -53,7 +53,7 @@ export default function Hits() {
     try {
       const response = await axios.post('http://localhost:5000/predict-hits-model', data);
       const  hitProb  = response.data;
-      setHitProbability(hitProb.hits[0][1]);
+      setHitProbability(hitProb.hits[0][1]*100);
     } catch (error) {
       console.error('Error al enviar los datos:', error);
     }
