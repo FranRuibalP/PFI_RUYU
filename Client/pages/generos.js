@@ -55,7 +55,7 @@ export default function Generos() {
   const chartSeries = [
     {
       name: 'Popularidad',
-      data: genresScores, // Valores de popularidad entre 1 y 4
+      data: genresScores, // Valores de popularidad entre 1 y 5
     },
   ];
   

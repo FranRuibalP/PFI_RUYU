@@ -65,7 +65,7 @@ export default function Ventas() {
       try {
         const response = await axios.get(`http://localhost:5000/publishers?q=${value}`);
         console.log(response.data[0].publishers);
-        setPublisherOptions(response.data);  // Asegúrate de que los datos sean la lista de publishers
+        setPublisherOptions(response.data);  
       } catch (error) {
         console.error('Error fetching publishers:', error);
       }
@@ -110,19 +110,22 @@ export default function Ventas() {
             </MUIMenuItem>
             <Box sx={{ p: 2 }}>
               <Typography variant="body1">
-                1. Selecciona el nombre del publisher desde el menú desplegable.
+                1. Selecciona el nombre del publisher desde el menú desplegable. Si no aparece el tuyo, puedes escribir uno nuevo.
               </Typography>
               <Typography variant="body1">
-                2. Introduce el número de reviews y el puntaje de las reviews.
+                2. Ingresa las ventas promedio de tu publisher. Se completa automaticamente al seleccionar un publisher de la lista. Puede ser modificado.
               </Typography>
               <Typography variant="body1">
-                3. Especifica el precio del juego y selecciona los géneros.
+                3. Introduce el número de reviews y el porcentaje de reviews positivas que tengas, o sean tu objetivo.
               </Typography>
               <Typography variant="body1">
-                4. Elige la fecha de salida y haz clic en "Enviar".
+                4. Especifica el precio del juego y selecciona los géneros.
               </Typography>
               <Typography variant="body1">
-                5. La predicción de ventas y las ganancias estimadas se mostrarán en el lado derecho.
+                5. Elige la fecha de salida y haz clic en "Enviar".
+              </Typography>
+              <Typography variant="body1">
+                6. La predicción de ventas y las ganancias estimadas se mostrarán en el lado derecho.
               </Typography>
             </Box>
           </Menu>
@@ -151,10 +154,10 @@ export default function Ventas() {
                   {/* Publisher */}
                   <Grid item xs={12}>
                   <Autocomplete
-                    options={publisherOptions.map(option => option.publishers)}  // Mapea a los nombres
+                    options={publisherOptions.map(option => option.publishers)}  
                     value={publisher}
-                    onInputChange={handleInputChange}  // Usa esta para disparar las búsquedas incrementales
-                    onChange={handlePublisherChange}  // Actualiza el valor seleccionado
+                    onInputChange={handleInputChange}  
+                    onChange={handlePublisherChange}  
                     renderInput={(params) => (
                       <TextField {...params} label="Nombre del Publisher" variant="outlined" fullWidth />
                     )}
