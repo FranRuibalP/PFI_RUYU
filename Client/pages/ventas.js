@@ -275,7 +275,7 @@ export default function Ventas() {
                       <Box sx={{ padding: 2, border: '1px solid #ddd', borderRadius: '4px', textAlign: 'center' }}>
                         <Typography variant="h6">Ganancias estimadas</Typography>
                         <Typography variant="h4" color="primary">
-                          {predictedSales*price}
+                          {(predictedSales*price).toFixed(2)} USD
                         </Typography>
                       </Box>
                     )}
