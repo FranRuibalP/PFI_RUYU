@@ -4,17 +4,25 @@ import { Box, Grid, Typography, Divider, Paper } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import config from '../config';
 
 // Cargar ReactApexChart dinámicamente
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
-
 export default function Generos() {
   const [genresScores, setGenresScores] = useState([]);
+  const [genresScoresLabels, setGenresScoresLabels] = useState([]);
   const asyncGetGenresScores = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/predict-genres-model');
-      console.log(response.data);
-      setGenresScores(response.data);
+      const response = await axios.get('http://' + config.apiIP + '/predict-genres-model');
+      const data = response.data;
+      const uniqueGenres = [...new Set(data.map(item => item.genre))];
+      const popularities = data.map(item => parseFloat(item.defuzzified_popularity).toFixed(2));
+
+      setGenresScores(popularities);
+      setGenresScoresLabels(uniqueGenres);
+
+      console.log('Géneros únicos:', uniqueGenres);
+      console.log('Popularidad:', popularities);
     } catch (error) {
       console.error('Error al obtener los datos:', error);
     }
@@ -27,10 +35,7 @@ export default function Generos() {
       type: 'bar',
     },
     xaxis: {
-      categories: [
-        'Acción', 'Aventura', 'Casual', 'Early Access', 'Free to Play',
-        'Indie', 'RPG', 'Racing', 'Simulation', 'Sports', 'Strategy'
-      ],
+      categories:genresScoresLabels,
     },
     title: {
       text: 'Popularidad de Géneros del Próximo Año',
@@ -42,8 +47,9 @@ export default function Generos() {
     },
     yaxis: {
       title: {
-        text: 'Popularidad (1-5)',
+        text: 'Popularidad',
       },
+      min: parseFloat(genresScores[genresScores.length - 1])-0.1,
     },
     plotOptions: {
         bar: {
@@ -55,7 +61,7 @@ export default function Generos() {
   const chartSeries = [
     {
       name: 'Popularidad',
-      data: genresScores, // Valores de popularidad entre 1 y 5
+      data: genresScores, 
     },
   ];
   

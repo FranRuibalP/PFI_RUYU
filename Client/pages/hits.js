@@ -3,9 +3,9 @@ import { TextField, MenuItem, Button, Grid, Box, Autocomplete, Typography, Divid
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import MoreVertIcon from '@mui/icons-material/HelpOutline';
 import axios from 'axios';
+import config from '../config';
 
 export default function Hits() {
-
 
 
   const [publisher, setPublisher] = useState('');
@@ -50,7 +50,7 @@ export default function Hits() {
     //console.log('Enviando datos:', { publisher, reviews, score, price, genres, releaseDate });
 
     try {
-      const response = await axios.post('http://localhost:5000/predict-hits-model', data);
+      const response = await axios.post('http://' + config.apiIP + '/predict-hits-model', data);
       const  hitProb  = response.data;
       setHitProbability(hitProb.hits[0][1]*100);
     } catch (error) {
@@ -60,7 +60,7 @@ export default function Hits() {
   const handleInputChange = async (event, value) => {
     if (value.length > 0) {
       try {
-        const response = await axios.get(`http://localhost:5000/publishers?q=${value}`);
+        const response = await axios.get('http://' + config.apiIP + `/publishers?q=${value}`);
         console.log(response.data[0].publishers);
         setPublisherOptions(response.data);  
       } catch (error) {

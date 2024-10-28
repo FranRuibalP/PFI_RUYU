@@ -3,11 +3,11 @@ import dynamic from 'next/dynamic';
 import { Container,Paper, Divider, Typography, Button, Menu, MenuItem, Card, CardMedia, CardContent, Grid, colors } from '@mui/material';
 import Header from '../components/Header';
 
-// Importa ApexCharts dinámicamente para Next.js
+
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 export default function Home() {
-  // Estado para el menú desplegable
+  
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 

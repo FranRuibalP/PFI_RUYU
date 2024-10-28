@@ -3,6 +3,7 @@ import { TextField, MenuItem, Button, Grid, Box, Autocomplete, Typography, Divid
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import MoreVertIcon from '@mui/icons-material/HelpOutline';
 import axios from 'axios';
+import config from '../config';
 
 
 export default function Ventas() {
@@ -50,7 +51,7 @@ export default function Ventas() {
     //console.log('Enviando datos:', { publisher, reviews, score, price, genres, releaseDate });
 
     try {
-      const response = await axios.post('http://localhost:5000/predict-sales-model', data);
+      const response = await axios.post('http://' + config.apiIP + '/predict-sales-model', data);
       const { sales } = response.data;
       const salesPrediction = sales[0].toFixed(2);
       const estimatedRevenue = (salesPrediction * price).toFixed(2);
@@ -63,7 +64,7 @@ export default function Ventas() {
   const handleInputChange = async (event, value) => {
     if (value.length > 0) {
       try {
-        const response = await axios.get(`http://localhost:5000/publishers?q=${value}`);
+        const response = await axios.get('http://' + config.apiIP + `/publishers?q=${value}`);
         console.log(response.data[0].publishers);
         setPublisherOptions(response.data);  
       } catch (error) {

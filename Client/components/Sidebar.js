@@ -25,8 +25,8 @@ const Sidebar = () => {
         [`& .MuiDrawer-paper`]: { 
           width: 240, 
           boxSizing: 'border-box', 
-          marginTop: '64px',  // Deja espacio para el Header
-          backgroundColor: '#D8F3DC',  // Color de fondo
+          marginTop: '64px',  
+          backgroundColor: '#D8F3DC',  
         },
       }}
     >
@@ -40,12 +40,12 @@ const Sidebar = () => {
               key={index} 
               onClick={() => router.push(item.path)}
               sx={{
-                borderRadius: '20px',  // Bordes redondeados
-                margin: '10px',  // Margen
-                width: '90%',  // Ancho
-                backgroundColor: isActive ? '#74C69D' : 'inherit',  // Sombreado si está activo
+                borderRadius: '20px',  
+                margin: '10px',  
+                width: '90%',  
+                backgroundColor: isActive ? '#74C69D' : 'inherit',  
                 '&:hover': {
-                  backgroundColor: '#52B788',  // Sombreado al pasar el mouse
+                  backgroundColor: '#52B788',  
                 },
               }}
             >
