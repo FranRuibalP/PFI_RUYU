@@ -18,11 +18,20 @@ export default function Generos() {
       const uniqueGenres = [...new Set(data.map(item => item.genre))];
       const popularities = data.map(item => parseFloat(item.defuzzified_popularity).toFixed(2));
 
-      setGenresScores(popularities);
       setGenresScoresLabels(uniqueGenres);
+       
+       const minPopularity = Math.min(...popularities);
+       const maxPopularity = Math.max(...popularities);
 
-      console.log('Géneros únicos:', uniqueGenres);
-      console.log('Popularidad:', popularities);
+       // Escala los valores de popularidad a un rango de 1 a 4
+       const scaledPopularities = popularities.map(value => 
+           (1 + 3 * (value - minPopularity) / (maxPopularity - minPopularity)).toFixed(2)
+       );
+       setGenresScores(scaledPopularities);
+
+      //console.log('Géneros únicos:', uniqueGenres);
+      //console.log('Popularidad:', popularities);
+      
     } catch (error) {
       console.error('Error al obtener los datos:', error);
     }
@@ -49,7 +58,9 @@ export default function Generos() {
       title: {
         text: 'Popularidad',
       },
-      min: parseFloat(genresScores[genresScores.length - 1])-0.1,
+      min: 0,
+      max: 4,
+      tickAmount: 4,
     },
     plotOptions: {
         bar: {
