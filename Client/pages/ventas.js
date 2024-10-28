@@ -258,28 +258,28 @@ export default function Ventas() {
                   </Typography>
 
                   {/* Predicción de Ventas */}
-                  <TextField
-                    label="Predicción de Ventas"
-                    variant="outlined"
-                    fullWidth
-                    value={predictedSales}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    sx={{ marginBottom: 3 }}
-                  />
+                  <Grid item xs={12} md={6}>
+                    {predictedSales !== null && (
+                      <Box sx={{ padding: 2, border: '1px solid #ddd', borderRadius: '4px', textAlign: 'center' }}>
+                        <Typography variant="h6">Número estimado de ventas</Typography>
+                        <Typography variant="h4" color="primary">
+                          {predictedSales}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Grid>
 
                   {/* Ganancias Estimadas */}
-                  <TextField
-                    label="Ganancias Estimadas"
-                    variant="outlined"
-                    fullWidth
-                    value={estimatedEarnings}
-                    InputProps={{
-                      readOnly: true,
-                      startAdornment: <span>$</span>,
-                    }}
-                  />
+                  <Grid item xs={12} md={6}>
+                    {predictedSales !== null && (
+                      <Box sx={{ padding: 2, border: '1px solid #ddd', borderRadius: '4px', textAlign: 'center' }}>
+                        <Typography variant="h6">Ganancias estimadas</Typography>
+                        <Typography variant="h4" color="primary">
+                          {predictedSales*price}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Grid>
                 </Box>
               </Grid>
             </Grid>
