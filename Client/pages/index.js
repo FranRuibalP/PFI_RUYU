@@ -3,11 +3,11 @@ import dynamic from 'next/dynamic';
 import { Container,Paper, Divider, Typography, Button, Menu, MenuItem, Card, CardMedia, CardContent, Grid, colors } from '@mui/material';
 import Header from '../components/Header';
 
-// Importa ApexCharts dinámicamente para Next.js
+
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 export default function Home() {
-  // Estado para el menú desplegable
+  
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -20,7 +20,6 @@ export default function Home() {
   };
 
   // Datos para el gráfico de ventas
-  // Datos del archivo JSON para el gráfico de ventas
   const [series] = useState([
     {
       name: 'Bō: Path of the Teal Lotus',
@@ -77,7 +76,7 @@ export default function Home() {
   });
 
   // Datos para el gráfico circular de reseñas
-  const [reviewsSeries] = useState([82, 18 ]); // 75% positivas, 25% negativas
+  const [reviewsSeries] = useState([82, 18 ]); 
   const [reviewsOptions] = useState({
     chart: {
       type: 'donut',

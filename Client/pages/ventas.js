@@ -3,6 +3,7 @@ import { TextField, MenuItem, Button, Grid, Box, Autocomplete, Typography, Divid
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import MoreVertIcon from '@mui/icons-material/HelpOutline';
 import axios from 'axios';
+import config from '../config';
 
 
 export default function Ventas() {
@@ -50,7 +51,7 @@ export default function Ventas() {
     //console.log('Enviando datos:', { publisher, reviews, score, price, genres, releaseDate });
 
     try {
-      const response = await axios.post('http://localhost:5000/predict-sales-model', data);
+      const response = await axios.post('http://' + config.apiIP + '/predict-sales-model', data);
       const { sales } = response.data;
       const salesPrediction = sales[0].toFixed(2);
       const estimatedRevenue = (salesPrediction * price).toFixed(2);
@@ -63,9 +64,9 @@ export default function Ventas() {
   const handleInputChange = async (event, value) => {
     if (value.length > 0) {
       try {
-        const response = await axios.get(`http://localhost:5000/publishers?q=${value}`);
+        const response = await axios.get('http://' + config.apiIP + `/publishers?q=${value}`);
         console.log(response.data[0].publishers);
-        setPublisherOptions(response.data);  // Asegúrate de que los datos sean la lista de publishers
+        setPublisherOptions(response.data);  
       } catch (error) {
         console.error('Error fetching publishers:', error);
       }
@@ -110,19 +111,22 @@ export default function Ventas() {
             </MUIMenuItem>
             <Box sx={{ p: 2 }}>
               <Typography variant="body1">
-                1. Selecciona el nombre del publisher desde el menú desplegable.
+                1. Selecciona el nombre del publisher desde el menú desplegable. Si no aparece el tuyo, puedes escribir uno nuevo.
               </Typography>
               <Typography variant="body1">
-                2. Introduce el número de reviews y el puntaje de las reviews.
+                2. Ingresa las ventas promedio de tu publisher. Se completa automaticamente al seleccionar un publisher de la lista. Puede ser modificado.
               </Typography>
               <Typography variant="body1">
-                3. Especifica el precio del juego y selecciona los géneros.
+                3. Introduce el número de reviews y el porcentaje de reviews positivas que tengas, o sean tu objetivo.
               </Typography>
               <Typography variant="body1">
-                4. Elige la fecha de salida y haz clic en "Enviar".
+                4. Especifica el precio del juego y selecciona los géneros.
               </Typography>
               <Typography variant="body1">
-                5. La predicción de ventas y las ganancias estimadas se mostrarán en el lado derecho.
+                5. Elige la fecha de salida y haz clic en "Enviar".
+              </Typography>
+              <Typography variant="body1">
+                6. La predicción de ventas y las ganancias estimadas se mostrarán en el lado derecho.
               </Typography>
             </Box>
           </Menu>
@@ -151,10 +155,10 @@ export default function Ventas() {
                   {/* Publisher */}
                   <Grid item xs={12}>
                   <Autocomplete
-                    options={publisherOptions.map(option => option.publishers)}  // Mapea a los nombres
+                    options={publisherOptions.map(option => option.publishers)}  
                     value={publisher}
-                    onInputChange={handleInputChange}  // Usa esta para disparar las búsquedas incrementales
-                    onChange={handlePublisherChange}  // Actualiza el valor seleccionado
+                    onInputChange={handleInputChange}  
+                    onChange={handlePublisherChange}  
                     renderInput={(params) => (
                       <TextField {...params} label="Nombre del Publisher" variant="outlined" fullWidth />
                     )}
@@ -254,28 +258,28 @@ export default function Ventas() {
                   </Typography>
 
                   {/* Predicción de Ventas */}
-                  <TextField
-                    label="Predicción de Ventas"
-                    variant="outlined"
-                    fullWidth
-                    value={predictedSales}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    sx={{ marginBottom: 3 }}
-                  />
+                  <Grid item xs={12} md={6}>
+                    {predictedSales !== null && (
+                      <Box sx={{ padding: 2, border: '1px solid #ddd', borderRadius: '4px', textAlign: 'center' }}>
+                        <Typography variant="h6">Número estimado de ventas</Typography>
+                        <Typography variant="h4" color="primary">
+                          {predictedSales}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Grid>
 
                   {/* Ganancias Estimadas */}
-                  <TextField
-                    label="Ganancias Estimadas"
-                    variant="outlined"
-                    fullWidth
-                    value={estimatedEarnings}
-                    InputProps={{
-                      readOnly: true,
-                      startAdornment: <span>$</span>,
-                    }}
-                  />
+                  <Grid item xs={12} md={6}>
+                    {predictedSales !== null && (
+                      <Box sx={{ padding: 2, border: '1px solid #ddd', borderRadius: '4px', textAlign: 'center' }}>
+                        <Typography variant="h6">Ganancias estimadas</Typography>
+                        <Typography variant="h4" color="primary">
+                          {(predictedSales*price).toFixed(2)} USD
+                        </Typography>
+                      </Box>
+                    )}
+                  </Grid>
                 </Box>
               </Grid>
             </Grid>
